@@ -1,3 +1,19 @@
+# golem llama fork
+
+This is a customized verfion of llama.cpp that will allow a side-loaded neural net to read a set of activations from
+the LLM and use those to condition the logits presented for sampling.  This host is to be used with [golem](https://github.com/wkcochran123/golem) so that the robot can express whether or not a prompt was "good" or "bad."
+
+To use:
+1. `cmake -B build`
+2. `cmake --build build --config Release` (of course, I recommend `-j8`)
+3. `build/bin/llama-server --model <path to gguf> --host <ip address> --port <port>`
+4. `python golem/llm/cortex.py`
+
+This host will _not_ work without the supplemental python sidecar found in [`golem/python/llm/cortex.py`(https://github.com/wkcochran123/golem/python/llm/cortex.py`]
+
+This currently shares data through files, so it is extraordinarily brittle, but quite universal.
+
+
 # llama.cpp
 
 ![llama](https://user-images.githubusercontent.com/1991296/230134379-7181e485-c521-4d23-a0d6-f7b3b61ba524.png)
