@@ -11,6 +11,8 @@
 #include "llama-memory-hybrid.h"
 #include "llama-memory-recurrent.h"
 
+#include "concept_trace.h"
+
 #include "ggml-cpp.h"
 
 #include <algorithm>
@@ -7686,6 +7688,7 @@ struct llm_build_qwen : public llm_graph_context {
     }
 };
 
+
 struct llm_build_qwen2 : public llm_graph_context {
     llm_build_qwen2(const llama_model & model, const llm_graph_params & params, ggml_cgraph * gf) : llm_graph_context(params) {
         const int64_t n_embd_head = hparams.n_embd_head_v;
@@ -7706,6 +7709,7 @@ struct llm_build_qwen2 : public llm_graph_context {
         ggml_tensor * inp_out_ids = build_inp_out_ids();
 
         for (int il = 0; il < n_layer; ++il) {
+			
             ggml_tensor * inpSA = inpL;
 
             // norm
@@ -7783,6 +7787,10 @@ struct llm_build_qwen2 : public llm_graph_context {
 
             // input for next layer
             inpL = cur;
+			if (il == 0) {
+				ConceptTrace::capture(cur);
+			}
+
         }
 
         cur = inpL;

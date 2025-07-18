@@ -7,6 +7,8 @@
 #include "llama-mmap.h"
 #include "llama-model.h"
 
+#include "concept_trace.h"
+
 #include <cinttypes>
 #include <cstring>
 #include <limits>
@@ -15,6 +17,9 @@
 //
 // llama_context
 //
+extern "C" LLAMA_API const char * llama_token_to_str(struct llama_context * ctx, llama_token token);
+
+
 
 llama_context::llama_context(
         const llama_model & model,
@@ -752,6 +757,15 @@ llm_graph_result_i * llama_context::process_ubatch(const llama_ubatch & ubatch, 
         ret = status;
         return nullptr;
     }
+
+	int32_t last_token = ubatch.token[ubatch.n_tokens - 1];
+	printf ("Here we are");
+	fflush(stdout);
+
+const char * last_token_str = this->get_model().vocab.token_get_text(last_token);
+	printf ("Failed");
+	fflush(stdout);
+	ConceptTrace::dump(last_token_str);
 
     ret = GGML_STATUS_SUCCESS;
 

@@ -4,6 +4,8 @@
 #include "llama-vocab.h"
 #include "llama-grammar.h"
 
+#include "concept_trace.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cfloat>
@@ -177,16 +179,16 @@ static void llama_log_softmax(float * array, size_t size) {
 */
 
 static void llama_sampler_temp_impl(llama_token_data_array * cur_p, float temp) {
+	std::vector<float> logits = ConceptTrace::wait_for_logits_file();
     if (temp <= 0.0f) {
         // find the token with the highest logit and set the rest to -inf
         size_t max_i = 0;
         float  max_l = cur_p->data[0].logit;
-
         for (size_t i = 1; i < cur_p->size; ++i) {
             if (cur_p->data[i    ].logit > max_l) {
                 cur_p->data[max_i].logit = -INFINITY;
                 max_i = i;
-                max_l = cur_p->data[i].logit;
+                max_l = logits[cur_p->data[i].id];
             } else {
                 cur_p->data[i].logit = -INFINITY;
             }
@@ -196,7 +198,7 @@ static void llama_sampler_temp_impl(llama_token_data_array * cur_p, float temp) 
     }
 
     for (size_t i = 0; i < cur_p->size; ++i) {
-        cur_p->data[i].logit /= temp;
+        cur_p->data[i].logit = logits[cur_p->data[i].id]/temp;
     }
 }
 
