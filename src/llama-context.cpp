@@ -759,12 +759,8 @@ llm_graph_result_i * llama_context::process_ubatch(const llama_ubatch & ubatch, 
     }
 
 	int32_t last_token = ubatch.token[ubatch.n_tokens - 1];
-	printf ("Here we are");
-	fflush(stdout);
 
 const char * last_token_str = this->get_model().vocab.token_get_text(last_token);
-	printf ("Failed");
-	fflush(stdout);
 	ConceptTrace::dump(last_token_str);
 
     ret = GGML_STATUS_SUCCESS;

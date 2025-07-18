@@ -42,7 +42,7 @@ void ConceptTrace::dump(const std::string & token) {
 #include <unistd.h>  // for unlink
 
 
-std::vector<float> ConceptTrace::wait_for_logits_file(const std::string& path) {
+void ConceptTrace::wait_for_logits_file(std::vector<float> &logits, const std::string& path) {
     // Wait for file to appear
     while (access(path.c_str(), F_OK) != 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -52,14 +52,11 @@ std::vector<float> ConceptTrace::wait_for_logits_file(const std::string& path) {
     std::ifstream infile(path, std::ios::binary | std::ios::ate);
     std::streamsize size = infile.tellg();
     infile.seekg(0, std::ios::beg);
-
-    std::vector<float> logits(size / sizeof(float));
+    logits.resize(size / sizeof(float));
     if (!infile.read(reinterpret_cast<char*>(logits.data()), size)) {
         throw std::runtime_error("Failed to read logits file");
     }
 
     infile.close();
     unlink(path.c_str());
-
-    return logits;
 }

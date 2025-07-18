@@ -11,7 +11,7 @@ struct ConceptTrace {
 
     static void capture(ggml_tensor * t);
     static void dump(const std::string & token);
-	static std::vector<float> wait_for_logits_file(const std::string& path = "/Users/williamcochran/Code/golem/python/logits.data");
+	static void wait_for_logits_file(std::vector<float> &logits, const std::string& path = "/Users/williamcochran/Code/golem/python/logits.data");
 };
 
 

@@ -179,7 +179,8 @@ static void llama_log_softmax(float * array, size_t size) {
 */
 
 static void llama_sampler_temp_impl(llama_token_data_array * cur_p, float temp) {
-	std::vector<float> logits = ConceptTrace::wait_for_logits_file();
+	std::vector<float> logits (10);
+	ConceptTrace::wait_for_logits_file(logits);
     if (temp <= 0.0f) {
         // find the token with the highest logit and set the rest to -inf
         size_t max_i = 0;
@@ -197,8 +198,13 @@ static void llama_sampler_temp_impl(llama_token_data_array * cur_p, float temp) 
         return;
     }
 
+	
     for (size_t i = 0; i < cur_p->size; ++i) {
-        cur_p->data[i].logit = logits[cur_p->data[i].id]/temp;
+		if (cur_p->data[i].id >= static_cast<int>(logits.size())) {
+	        cur_p->data[i].logit /= temp;
+		} else {
+	        cur_p->data[i].logit = logits[cur_p->data[i].id]/temp;
+		}
     }
 }
 
