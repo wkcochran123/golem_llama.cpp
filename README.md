@@ -9,7 +9,7 @@ To use:
 3. `build/bin/llama-server --model <path to gguf> --host <ip address> --port <port>`
 4. `python golem/llm/cortex.py`
 
-This host will _not_ work without the supplemental python sidecar found in [`golem/python/llm/cortex.py`](https://github.com/wkcochran123/golem/python/llm/cortex.py)
+This host will _not_ work without the supplemental python sidecar found in [`golem/python/llm/cortex.py`](https://github.com/wkcochran123/golem/tree/main/python/llm/cortex.py)
 
 This currently shares data through files, so it is extraordinarily brittle, but quite universal.
 
